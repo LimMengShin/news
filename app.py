@@ -159,3 +159,6 @@ Read the provided news article and respond to the user's query. You can refer to
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+def create_app():
+    return app
