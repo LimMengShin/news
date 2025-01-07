@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Topic Details</title>
+</head>
+
+<body>
+    <header>
+        <a href="/" class="back-btn">Back</a>
+        <h1>Topic Details</h1>
+        <div class="toggle-container">
+            <span id="sun" class="emoji">☀️</span>
+            <label class="switch">
+                <input type="checkbox" id="toggle2" checked>
+                <span class="slider"></span>
+            </label>
+            <span id="moon" class="emoji">🌙</span>
+        </div>
+    </header>
+    <main class="event-page">
+        <!-- Main Article Section -->
+        <section class="main-article">
+            <h2>Unbiased AI-generated article</h2>
+            <div class="article-card">
+                <h2>{{ event['thematic_title'] }}</h2>
+                <img src="{{ image_urls[-1] }}" alt="{{ event['thematic_title'] }}">
+                <p id="ai-article">{{ ai_article | safe }}</p>
+            </div>
+        </section>
+
+        <!-- Fixed Question Bar -->
+        <div id="question-bar" class="question-bar">
+            <textarea id="highlighted-text" readonly placeholder="Highlighted text will appear here..."></textarea>
+            <textarea id="user-question" placeholder="Type your question here..."></textarea>
+            <button id="ask-question-btn">Ask Gemini AI</button>
+        </div>
+
+        <!-- AI Answer Display -->
+        <div id="ai-answer" class="ai-answer hidden">
+            <h3>AI Response</h3>
+            <p id="answer-text"></p>
+            <button id="close-answer-btn">Close</button> <!-- Close Button -->
+        </div>
+
+        <!-- Sidebar Section -->
+        <aside class="sidebar">
+            <h2>Articles by News Publishers</h2>
+            {% for article in articles %}
+            <div class="article-card">
+                <img src="{{ image_urls[loop.index-1] }}" alt="{{ article['news_title'] }}">
+                <h2>{{ article['news_title'] }}</h2>
+                <p>{{ article['content'][:150] }}...</p>
+                
+                <!-- Lean, Bias, and Tone Progress Bars with Labels -->
+                <div class="progress-bars">
+                    <div class="bar">
+                        <span class="label">Lean</span>
+                        <div class="progress" style="position: relative;">
+                            <div class="center-marker"
+                                style="position: absolute; height: 20px; width: 1%; background-color: black; top: -5px; left: 50%; transform: translateX(-50%);">
+                            </div>
+                            {% if article['lean'] < 0 %}
+                                <div class="fill democrat" style="width: {{ (article['lean'] / 5 * 50) | abs }}%; left: calc(50% - {{ (article['lean'] / 5 * 50) | abs }}%);"></div>
+                            {% elif article['lean'] > 0 %}
+                                <div class="fill conservative" style="width: {{ (article['lean'] / 5) * 50 }}%; left: 50%;"></div>
+                            {% else %}
+                                <div class="fill neutral" style="width: 2%; left: 49%; background-color: #e0e0e0;"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="bar">
+                        <span class="label">Bias</span>
+                        <div class="progress">
+                            <div class="fill bias" style="width: {{ article['bias'] * 10 }}%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bar">
+                        <span class="label">Tone</span>
+                        <div class="progress">
+                            <div class="fill tone" style="width: {{ article['tone'] * 10 }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ article['url'] }}" target="_blank">Read more at {{ article["news_source_name"] }}</a>
+            </div>
+            {% endfor %}
+        </aside>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 Unbiased News</p>
+    </footer>
+
+    <script>
+        const toggleSwitch = document.getElementById("toggle2");
+        const body = document.body;
+
+        // Check if the user has a stored preference for dark mode
+        if (localStorage.getItem("darkMode") === "enabled") {
+            toggleSwitch.checked = true;
+            body.classList.add("dark-mode");
+        } else if (localStorage.getItem("darkMode") === "disabled") {
+            toggleSwitch.checked = false;
+            body.classList.remove("dark-mode");
+        } else {
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (prefersDarkScheme) {
+                toggleSwitch.checked = true;
+                body.classList.add("dark-mode");
+            } else {
+                toggleSwitch.checked = false;
+                body.classList.remove("dark-mode");
+            }
+        }
+
+        toggleSwitch.addEventListener('change', () => {
+            if (toggleSwitch.checked) {
+                body.classList.add("dark-mode");
+                localStorage.setItem("darkMode", "enabled");
+            } else {
+                body.classList.remove("dark-mode");
+                localStorage.setItem("darkMode", "disabled");
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const article = document.getElementById('ai-article');
+        const questionBar = document.getElementById('question-bar');
+        const highlightedTextArea = document.getElementById('highlighted-text');
+        const userQuestionInput = document.getElementById('user-question');
+        const askQuestionBtn = document.getElementById('ask-question-btn');
+        const aiAnswerSection = document.getElementById('ai-answer');
+        const answerText = document.getElementById('answer-text');
+        const closeAnswerBtn = document.getElementById('close-answer-btn');
+
+        let highlightedText = '';
+
+        // Capture highlighted text
+        article.addEventListener('mouseup', () => {
+            const selection = window.getSelection();
+            const selectedText = selection.toString().trim();
+            if (selectedText) {
+                highlightedText = selectedText;
+                highlightedTextArea.value = highlightedText;
+            }
+        });
+
+        // Function to send the question to the server
+        const sendQuestion = async () => {
+            const userQuestion = userQuestionInput.value.trim();
+            if (!userQuestion) {
+                alert('Please enter a question!');
+                return;
+            }
+
+            // Update button text to "Loading..."
+            askQuestionBtn.textContent = 'Loading...';
+            askQuestionBtn.disabled = true;
+
+            aiAnswerSection.classList.add('hidden');
+
+            try {
+                // Send data to the server
+                const response = await fetch('/ask_gemini', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        event_id: {{ event["id"] }},
+                        highlighted_text: highlightedText,
+                        question: userQuestion,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    aiAnswerSection.classList.remove('hidden');
+                    answerText.textContent = data.answer;
+
+                    // Scroll to the answer section for visibility
+                    aiAnswerSection.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                // Reset button text and state
+                askQuestionBtn.textContent = 'Ask Gemini AI';
+                askQuestionBtn.disabled = false;
+            }
+
+            // Clear question input
+            userQuestionInput.value = '';
+        };
+
+        // Bind Enter key to the sendQuestion function
+        userQuestionInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent the default behavior of Enter key
+                sendQuestion();
+            }
+        });
+
+        // Bind button click to the sendQuestion function
+        askQuestionBtn.addEventListener('click', sendQuestion);
+
+        // Close AI answer section
+        closeAnswerBtn.addEventListener('click', () => {
+            aiAnswerSection.classList.add('hidden');
+        });
+    });
+    </script>
+
+</body>
+
+</html>

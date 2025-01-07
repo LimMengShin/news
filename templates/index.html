@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Unbiased News</title>
+</head>
+<body>
+    <header>
+        <h1>Unbiased News</h1>
+        <input type="text" id="search-input" placeholder="Search news..." autocomplete="off">
+        <div class="toggle-container">
+            <span id="sun" class="emoji">☀️</span>
+            <label class="switch">
+                <input type="checkbox" id="toggle" checked>
+                <span class="slider"></span>
+            </label>
+            <span id="moon" class="emoji">🌙</span>
+        </div>
+    </header>
+    <main id="events-container">
+        <h1>Trending News</h1>
+        <p id="no-results" style="display: none; text-align: center; color: #888;">No events found.</p>
+        {% for event in events %}
+        <div class="event-card" data-title="{{ event['thematic_title']|lower }}">
+            <img src="{{ image_urls[loop.index-1] }}" alt="{{ event['thematic_title'] }}">
+            <h2>{{ event['thematic_title'] }}</h2>
+            <p>{{ event['ai_article'][:200] }}...</p>
+            <a href="/event/{{ event['id'] }}">Read More</a>
+        </div>
+        {% endfor %}
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 Unbiased News</p>
+    </footer>
+    <script>
+        const toggleSwitch = document.getElementById("toggle");
+        const body = document.body;
+
+        // Check if the user has a stored preference for dark mode
+        if (localStorage.getItem("darkMode") === "enabled") {
+            toggleSwitch.checked = true;
+            body.classList.add("dark-mode");
+        } else if (localStorage.getItem("darkMode") === "disabled") {
+            toggleSwitch.checked = false;
+            body.classList.remove("dark-mode");
+        } else {
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (prefersDarkScheme) {
+                toggleSwitch.checked = true;
+                body.classList.add("dark-mode");
+            } else {
+                toggleSwitch.checked = false;
+                body.classList.remove("dark-mode");
+            }
+        }
+
+        toggleSwitch.addEventListener('change', () => {
+            if (toggleSwitch.checked) {
+                body.classList.add("dark-mode");
+                localStorage.setItem("darkMode", "enabled");
+            } else {
+                body.classList.remove("dark-mode");
+                localStorage.setItem("darkMode", "disabled");
+            }
+        });
+
+        const searchInput = document.getElementById('search-input');
+        const eventCards = document.querySelectorAll('.event-card');
+    
+        function debounce(func, wait = 300) {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func(...args), wait);
+            };
+        }
+
+        searchInput.addEventListener('input', debounce(() => {
+            const query = searchInput.value.trim().toLowerCase();
+            let hasResults = false;
+            eventCards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                if (title.includes(query)) {
+                    card.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            document.getElementById('no-results').style.display = hasResults ? 'none' : 'block';
+        }));
+
+        // Make entire event card clickable
+        document.querySelectorAll('.event-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const link = card.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
