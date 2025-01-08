@@ -2,9 +2,6 @@ name: "Update server"
 on:
   schedule:
     - cron: '0 1 * * *'
-  push:
-    branches:
-      - 'main'
 jobs:
   update-server:
     runs-on: ubuntu-latest
