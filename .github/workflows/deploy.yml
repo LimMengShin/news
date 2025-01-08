@@ -1,0 +1,27 @@
+name: "Deploy to Nest"
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_run:
+    workflows: ["Update server"]
+    types:
+      - completed
+jobs:
+  deploy-to-nest:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Connect to ssh, pull and systemctl restart
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            : # Load nix binaries
+            export PATH=/home/mengshin/.nix-profile/bin:$PATH
+            export PATH=/nix/var/nix/profiles/default/bin:$PATH
+            cd /home/mengshin/pub
+            git pull
+            systemctl --user restart news.service
