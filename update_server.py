@@ -1,6 +1,6 @@
 import sqlite3
-from datetime import datetime
 
+from get_date import get_start_end_date
 from newsapi import call_news_api
 from urltotext import call_url_to_text_api
 from gemini.clean import clean_article
@@ -9,8 +9,8 @@ from gemini.event import get_events
 from gemini.event_name import get_event_name
 from gemini.ai_article import write_ai_article
 
-yesterday = datetime.now().day-1
-articles = call_news_api(date=f"2025-01-{yesterday:02d}")
+start_date, end_date = get_start_end_date()
+articles = call_news_api(start_date=start_date, end_date=end_date)
 
 articles_length = len(articles)
 
