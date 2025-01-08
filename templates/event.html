@@ -129,112 +129,139 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-        const article = document.getElementById('ai-article');
-        const questionBar = document.getElementById('question-bar');
-        const highlightedTextArea = document.getElementById('highlighted-text');
-        const userQuestionInput = document.getElementById('user-question');
-        const askQuestionBtn = document.getElementById('ask-question-btn');
-        const aiAnswerSection = document.getElementById('ai-answer');
-        const answerText = document.getElementById('answer-text');
-        const closeAnswerBtn = document.getElementById('close-answer-btn');
+            const article = document.getElementById('ai-article');
+            const questionBar = document.getElementById('question-bar');
+            const highlightedTextArea = document.getElementById('highlighted-text');
+            const userQuestionInput = document.getElementById('user-question');
+            const askQuestionBtn = document.getElementById('ask-question-btn');
+            const aiAnswerSection = document.getElementById('ai-answer');
+            const answerText = document.getElementById('answer-text');
+            const closeAnswerBtn = document.getElementById('close-answer-btn');
 
-        // Check screen size and toggle the `readonly` attribute
-        const updateTextAreaState = () => {
-            if (window.innerWidth <= 768) { // Mobile condition
-                highlightedTextArea.removeAttribute('readonly');
-                highlightedTextArea.placeholder = 'Paste the relevant portion of text you want to ask...';
-            } else { // Desktop condition
-                highlightedTextArea.setAttribute('readonly', 'true');
-                highlightedTextArea.placeholder = 'Highlighted text will appear here...';
-            }
-        };
+            // Adjust the position of the question bar based on keyboard activity
+            const adjustForKeyboard = () => {
+                if (window.visualViewport) {
+                    const viewportHeight = window.visualViewport.height;
+                    const viewportOffset = window.visualViewport.offsetTop;
 
-        // Run the function on load
-        updateTextAreaState();
-
-        // Run the function on window resize
-        window.addEventListener('resize', updateTextAreaState);
-
-        let highlightedText = '';
-
-        // Capture highlighted text
-        article.addEventListener('mouseup', () => {
-            const selection = window.getSelection();
-            const selectedText = selection.toString().trim();
-            if (selectedText) {
-                highlightedText = selectedText;
-                highlightedTextArea.value = highlightedText;
-            }
-        });
-
-        // Function to send the question to the server
-        const sendQuestion = async () => {
-            const userQuestion = userQuestionInput.value.trim();
-            if (!userQuestion) {
-                alert('Please enter a question!');
-                return;
-            }
-
-            // Update button text to "Loading..."
-            askQuestionBtn.textContent = 'Loading...';
-            askQuestionBtn.disabled = true;
-
-            aiAnswerSection.classList.add('hidden');
-
-            try {
-                // Send data to the server
-                const response = await fetch('/ask_gemini', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        event_id: {{ event["id"] }},
-                        highlighted_text: highlightedText,
-                        question: userQuestion,
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    aiAnswerSection.classList.remove('hidden');
-                    answerText.textContent = data.answer;
-
-                    // Scroll to the answer section for visibility
-                    aiAnswerSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    alert('Something went wrong. Please try again.');
+                    // Set the bottom position based on the visible viewport height
+                    questionBar.style.bottom = `${window.innerHeight - viewportHeight - viewportOffset}px`;
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred. Please try again.');
-            } finally {
-                // Reset button text and state
-                askQuestionBtn.textContent = 'Ask Gemini AI';
-                askQuestionBtn.disabled = false;
+            };
+
+            // Listen for viewport changes (triggered when keyboard is shown/hidden)
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', adjustForKeyboard);
+                window.visualViewport.addEventListener('scroll', adjustForKeyboard);
             }
 
-            // Clear question input
-            userQuestionInput.value = '';
-        };
+            // Reset the position when keyboard is hidden
+            window.addEventListener('resize', () => {
+                questionBar.style.bottom = '0';
+            });
 
-        // Bind Enter key to the sendQuestion function
-        userQuestionInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault(); // Prevent the default behavior of Enter key
-                sendQuestion();
-            }
+            // Check screen size and toggle the `readonly` attribute
+            const updateTextAreaState = () => {
+                if (window.innerWidth <= 768) { // Mobile condition
+                    highlightedTextArea.removeAttribute('readonly');
+                    highlightedTextArea.placeholder = 'Paste the relevant portion of text you want to ask...';
+                } else { // Desktop condition
+                    highlightedTextArea.setAttribute('readonly', 'true');
+                    highlightedTextArea.placeholder = 'Highlighted text will appear here...';
+                }
+            };
+
+            // Run the function on load
+            updateTextAreaState();
+
+            // Run the function on window resize
+            window.addEventListener('resize', updateTextAreaState);
+
+            let highlightedText = '';
+
+            // Capture highlighted text
+            const handleTextSelection = () => {
+                const selection = window.getSelection();
+                const selectedText = selection.toString().trim();
+                if (selectedText) {
+                    highlightedText = selectedText;
+                    highlightedTextArea.value = highlightedText;
+                }
+            };
+
+            // Add event listeners for both 'mouseup' and 'pageshow'
+            ['mouseup', 'pageshow'].forEach(event => {
+                article.addEventListener(event, handleTextSelection);
+            });
+
+            // Function to send the question to the server
+            const sendQuestion = async () => {
+                const userQuestion = userQuestionInput.value.trim();
+                if (!userQuestion) {
+                    alert('Please enter a question!');
+                    return;
+                }
+
+                // Update button text to "Loading..."
+                askQuestionBtn.textContent = 'Loading...';
+                askQuestionBtn.disabled = true;
+
+                aiAnswerSection.classList.add('hidden');
+
+                try {
+                    // Send data to the server
+                    const response = await fetch('/ask_gemini', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            event_id: {{ event["id"] }},
+                            highlighted_text: highlightedText,
+                            question: userQuestion,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        aiAnswerSection.classList.remove('hidden');
+                        answerText.textContent = data.answer;
+
+                        // Scroll to the answer section for visibility
+                        aiAnswerSection.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Something went wrong. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                } finally {
+                    // Reset button text and state
+                    askQuestionBtn.textContent = 'Ask Gemini AI';
+                    askQuestionBtn.disabled = false;
+                }
+
+                // Clear question input
+                userQuestionInput.value = '';
+            };
+
+            // Bind Enter key to the sendQuestion function
+            userQuestionInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent the default behavior of Enter key
+                    sendQuestion();
+                }
+            });
+
+            // Bind button click to the sendQuestion function
+            askQuestionBtn.addEventListener('click', sendQuestion);
+
+            // Close AI answer section
+            closeAnswerBtn.addEventListener('click', () => {
+                aiAnswerSection.classList.add('hidden');
+            });
         });
-
-        // Bind button click to the sendQuestion function
-        askQuestionBtn.addEventListener('click', sendQuestion);
-
-        // Close AI answer section
-        closeAnswerBtn.addEventListener('click', () => {
-            aiAnswerSection.classList.add('hidden');
-        });
-    });
     </script>
 
 </body>
