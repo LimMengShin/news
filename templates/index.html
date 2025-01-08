@@ -25,9 +25,11 @@
         {% for event in events %}
         <div class="event-card" data-title="{{ event['thematic_title']|lower }}">
             <img src="{{ image_urls[loop.index-1] }}" alt="{{ event['thematic_title'] }}">
-            <h2>{{ event['thematic_title'] }}</h2>
-            <p>{{ event['ai_article'][:200] }}...</p>
-            <a href="/event/{{ event['id'] }}">Read More</a>
+            <div>
+                <h2>{{ event['thematic_title'] }}</h2>
+                <p>{{ event['ai_article'][:200] }}...</p>
+                <a href="/event/{{ event['id'] }}">Read More</a>
+            </div>
         </div>
         {% endfor %}
     </main>
@@ -83,7 +85,7 @@
             eventCards.forEach(card => {
                 const title = card.getAttribute('data-title');
                 if (title.includes(query)) {
-                    card.style.display = 'block';
+                    card.style.display = 'flex';
                     hasResults = true;
                 } else {
                     card.style.display = 'none';

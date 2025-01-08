@@ -49,7 +49,7 @@ h1, h2 {
 /* Header Text */
 header h1 {
     font-size: 1.8rem;
-    margin: 0;
+    margin: 1rem;
 }
 
 header .back-btn {
@@ -79,6 +79,7 @@ header .back-btn:hover {
     background-color: #fff;
     color: #333;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 1rem;
 }
 
 body.dark-mode #search-input {
@@ -132,18 +133,51 @@ body.dark-mode main {
     transition: all 0.3s ease;
 }
 
+.event-card {
+    display: flex;
+    flex-direction: row; /* Default to stacked layout */
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    align-items: flex-start; /* Align items at the top */
+    gap: 1rem; /* Add space between image and content */
+}
+
+/* Adjust layout for desktop */
+@media (max-width: 768px) {
+    .event-card {
+        flex-direction: column; /* Side-by-side layout */
+    }
+
+    
+}
+
 body.dark-mode .event-card, body.dark-mode .article-card {
     background-color: #333;
     color: #ddd;
 }
 
-.event-card img, .article-card img {
+.article-card img {
     width: 100%;
     height: 300px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 1rem;
     transition: transform 0.3s ease;
+}
+
+.event-card img {
+    width: 350px;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem; /* Margin for stacked layout */
+    transition: transform 0.3s ease;
+    align-items: center;
 }
 
 .event-card img:hover, .article-card img:hover {
@@ -597,7 +631,7 @@ body.dark-mode .question-bar button:hover {
 /* AI Answer Display */
 .ai-answer {
     position: fixed;
-    bottom: 100px; /* Adjusted for the height of the question bar */
+    bottom: 200px; /* Adjusted for the height of the question bar */
     left: 0;
     width: 100%;
     background-color: #fff;
@@ -657,4 +691,122 @@ body.dark-mode .ai-answer p {
 
 #close-answer-btn:hover {
     background-color: #ff2e2e;
+}
+
+
+/* Main Content Styling */
+
+
+body.dark-mode main {
+    background-color: #222;
+}
+
+/* Event and Article Cards */
+.event-card, .article-card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .event-card, body.dark-mode .article-card {
+    background-color: #333;
+    color: #ddd;
+}
+
+.event-card img:hover, .article-card img:hover {
+    transform: scale(1.05);
+}
+
+/* Question Bar */
+.question-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+    z-index: 1000;
+    border-top: 2px solid #ccc;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body.dark-mode .question-bar {
+    background-color: #222;
+    border-color: #444;
+}
+
+.question-bar textarea {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    resize: none;
+    background-color: #fff;
+    color: #333;
+}
+
+body.dark-mode .question-bar textarea {
+    background-color: #333;
+    color: #ddd;
+}
+
+.question-bar button {
+    width: 90%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+body.dark-mode .question-bar button {
+    background-color: #1e90ff;
+}
+
+.hidden {
+    display: none;
+}
+
+
+body.dark-mode .ai-answer {
+    background-color: #333;
+    border-color: #444;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .event-page {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .main-article, .sidebar {
+        flex: 1;
+        margin-bottom: 1rem;
+    }
+
+    .event-card, .article-card {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.4rem;
+    }
+
+    .question-bar textarea, .question-bar button {
+        width: 95%;
+    }
 }
