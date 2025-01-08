@@ -138,6 +138,23 @@
         const answerText = document.getElementById('answer-text');
         const closeAnswerBtn = document.getElementById('close-answer-btn');
 
+        // Check screen size and toggle the `readonly` attribute
+        const updateTextAreaState = () => {
+            if (window.innerWidth <= 768) { // Mobile condition
+                highlightedTextArea.removeAttribute('readonly');
+                highlightedTextArea.placeholder = 'Paste the relevant portion of text you want to ask...';
+            } else { // Desktop condition
+                highlightedTextArea.setAttribute('readonly', 'true');
+                highlightedTextArea.placeholder = 'Highlighted text will appear here...';
+            }
+        };
+
+        // Run the function on load
+        updateTextAreaState();
+
+        // Run the function on window resize
+        window.addEventListener('resize', updateTextAreaState);
+
         let highlightedText = '';
 
         // Capture highlighted text
