@@ -1,6 +1,6 @@
 # Unbiased News - A Flask Website with Gemini AI Integration
 
-![demo](https://cloud-uf9xlkaa7-hack-club-bot.vercel.app/0demo.gif)
+![demo](image.png)
 
 ---
 
@@ -16,7 +16,9 @@ Ask Gemini AI to clarify details or gain deeper insights into any part of a news
 ### 2. **Political Leaning, Bias, and Tone Analysis**
 Analyse how an article aligns with political spectrums (e.g., Democrat or Conservative in the US), assess its level of bias, and determine its tone (positive or negative).
 
-### 3. **Dark Mode**
+### 3. **Search for Articles**
+
+### 4. **Dark Mode**
 
 ## Future Improvements
 
