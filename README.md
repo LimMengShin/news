@@ -1,6 +1,6 @@
 # Unbiased News - A Flask Website with Gemini AI Integration
 
-![demo](image.png)
+![demo](https://cloud-jvsjp5lq4-hack-club-bot.vercel.app/0image.png)
 
 ---
 
@@ -68,6 +68,8 @@ Check out the live demo: [Unbiased News Demo](https://news.mengshin.me)
    NEWS_API_KEY="your-key-here"
    URLTOTEXT_API_KEY="your-key-here"
    ```
+
+3. Run `update_server.py`, followed by `update_server_2.py`.
 
 ## Technologies Used
 
