@@ -126,8 +126,8 @@ body.dark-mode main {
 .event-card, .article-card {
     background-color: #fff;
     border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
@@ -143,6 +143,10 @@ body.dark-mode main {
     transition: all 0.3s ease;
     align-items: flex-start; /* Align items at the top */
     gap: 1rem; /* Add space between image and content */
+    position: relative;
+    cursor: pointer;
+    overflow: hidden; /* Ensure the shiny effect stays within the card */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Adjust layout for desktop */
@@ -497,12 +501,6 @@ body.dark-mode .sidebar {
 }
 
 /* Event card styling */
-.event-card {
-    position: relative;
-    cursor: pointer;
-    overflow: hidden; /* Ensure the shiny effect stays within the card */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
 .event-card:hover {
     transform: scale(1.02);
@@ -548,41 +546,35 @@ body.dark-mode .sidebar {
     left: 0;
     width: 100%;
     background-color: #f4f4f4;
-    border-top: 2px solid #ccc;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    padding: 15px 20px;
+    padding: 10px;
     gap: 10px;
     z-index: 1000;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 15px 15px 0 0; /* Rounded corners at the top */
+    border-top: 2px solid #ccc;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 body.dark-mode .question-bar {
     background-color: #222;
     border-color: #444;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
 }
 
 .question-bar textarea {
-    flex: 1;
-    resize: none;
-    padding: 12px;
+    width: 90%;
+    padding: 10px;
     border: 1px solid #ddd;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 14px;
+    resize: none;
     background-color: #fff;
     color: #333;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 body.dark-mode .question-bar textarea {
     background-color: #333;
     color: #ddd;
-    border-color: #444;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .question-bar textarea::placeholder {
@@ -595,16 +587,15 @@ body.dark-mode .question-bar textarea::placeholder {
 }
 
 .question-bar button {
-    padding: 12px 20px;
+    width: 90%;
+    padding: 12px;
+    font-size: 16px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-weight: bold;
 }
 
 .question-bar button:hover {
@@ -688,23 +679,6 @@ body.dark-mode .ai-answer p {
 }
 
 
-/* Main Content Styling */
-
-
-body.dark-mode main {
-    background-color: #222;
-}
-
-/* Event and Article Cards */
-.event-card, .article-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-}
-
 body.dark-mode .event-card, body.dark-mode .article-card {
     background-color: #333;
     color: #ddd;
@@ -714,59 +688,6 @@ body.dark-mode .event-card, body.dark-mode .article-card {
     transform: scale(1.05);
 }
 
-/* Question Bar */
-.question-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #f4f4f4;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    gap: 10px;
-    z-index: 1000;
-    border-top: 2px solid #ccc;
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-body.dark-mode .question-bar {
-    background-color: #222;
-    border-color: #444;
-}
-
-.question-bar textarea {
-    width: 90%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 14px;
-    resize: none;
-    background-color: #fff;
-    color: #333;
-}
-
-body.dark-mode .question-bar textarea {
-    background-color: #333;
-    color: #ddd;
-}
-
-.question-bar button {
-    width: 90%;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-body.dark-mode .question-bar button {
-    background-color: #1e90ff;
-}
 
 .hidden {
     display: none;
@@ -788,10 +709,6 @@ body.dark-mode .ai-answer {
     .main-article, .sidebar {
         flex: 1;
         margin-bottom: 1rem;
-    }
-
-    .event-card, .article-card {
-        padding: 1rem;
     }
 }
 
