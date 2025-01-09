@@ -38,7 +38,7 @@ def close_connection(exception):
 
 @app.route('/')
 def index():
-    events = query_db("SELECT id, thematic_title, ai_article, article_ids FROM events")
+    events = query_db("SELECT id, thematic_title, ai_article, article_ids FROM events ORDER BY LENGTH(article_ids) - LENGTH(REPLACE(article_ids, ',', '')) DESC")
     image_urls = []
     for event in events:
         article_ids = [int(id.strip()) for id in event['article_ids'].split(',')]
