@@ -11,7 +11,8 @@ def get_events(gemini_api_key):
 
     select_query = """
     SELECT * FROM news_articles
-    WHERE DATE(date) >= DATE('now', '-3 days');
+    WHERE DATE(date) >= DATE('now', '-3 days')
+    GROUP BY date, news_title;
     """
 
     cursor.execute(select_query)

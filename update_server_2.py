@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 import os
 import random
+from random import randint
 
 from gemini.lean_bias_tone import get_lean_bias_tone
 from gemini.event import get_events
@@ -12,13 +13,15 @@ from gemini.ai_article import write_ai_article
 load_dotenv()
 
 gemini_api_keys = os.getenv("GEMINI_API_KEY").split(",")
+gemini_api_key = gemini_api_keys[randint(0, len(gemini_api_keys)-1)]
 
 def split_articles(a, n):
     k, m = divmod(len(a), n)
     return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
 # Get events
-events_list = get_events(gemini_api_keys[0])
+events_list = get_events(gemini_api_key)
+print(len(events_list))
 random.shuffle(events_list)
 events_list = list(split_articles(events_list, len(gemini_api_keys)))
 
