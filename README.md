@@ -1,6 +1,6 @@
 # Unbiased News - A Flask Website with Gemini AI Integration
 
-![demo](https://cloud-jvsjp5lq4-hack-club-bot.vercel.app/0image.png)
+![demo](image.png)
 
 ---
 
@@ -77,7 +77,8 @@ Check out the live demo: [Unbiased News Demo](https://news.mengshin.me)
 
 ## Credits
 
-1. **ChatGPT**
-2. **GitHub Copilot**
+1. **Stack Overflow**
+2. **ChatGPT**
+3. **GitHub Copilot**
 
 (Note: Don't worry, I built most of the project myself! These tools helped primarily with generating prompts for Gemini AI and some support in HTML, CSS, and JavaScript as I'm not too well-versed in those technologies.)
