@@ -1,0 +1,34 @@
+name: "Update server 2"
+on:
+  workflow_run:
+    workflows: ["Update server"]
+    types:
+      - completed
+jobs:
+  update-server-2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-dotenv
+          pip install scikit-learn
+          pip install networkx
+          pip install google-generativeai
+      - name: Run update_server_2.py
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          URLTOTEXT_API_KEY: ${{ secrets.URLTOTEXT_API_KEY }}
+        run: python update_server_2.py
+      - name: Commit and push
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add news.db
+          git commit -m "Update server 2"
+          git push origin main
