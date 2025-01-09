@@ -28,7 +28,7 @@
             <div class="article-card">
                 <h2>{{ event['thematic_title'] }}</h2>
                 <img src="{{ image_urls[-1] }}" alt="{{ event['thematic_title'] }}">
-                <p id="ai-article">{{ ai_article | safe }}</p>
+                <p id="ai-article"><md>{{ ai_article | safe }}</md></p>
             </div>
         </section>
 
@@ -263,7 +263,7 @@
             });
         });
     </script>
-
+    <script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script>
 </body>
 
 </html>
