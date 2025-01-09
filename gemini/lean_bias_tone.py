@@ -3,18 +3,11 @@ import json
 import time
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+def get_lean_bias_tone(article, gemini_api_key):
+    genai.configure(api_key=gemini_api_key)
+    model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-genai.configure(api_key=gemini_api_key)
-model = genai.GenerativeModel("gemini-2.0-flash-exp")
-
-
-def get_lean_bias_tone(article):
     tries = 0
     while True:
         try:

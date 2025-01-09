@@ -5,6 +5,7 @@ import sqlite3
 import time
 from dotenv import load_dotenv
 import os
+from random import randint
 
 app = Flask(__name__)
 
@@ -12,10 +13,7 @@ database = 'news.db'
 
 load_dotenv()
 
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-genai.configure(api_key=gemini_api_key)
-model = genai.GenerativeModel("gemini-1.5-flash")
+gemini_api_keys = os.getenv("GEMINI_API_KEY").split(",")
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -144,6 +142,11 @@ The following is a question by a user regarding{highlighted_prompt} the news art
 
 Read the provided news article and respond to the user's query. You can refer to the article or search online. Answer in a fun helpful and kind way. Answer in a similar manner as the user. Answer directly without markdown and in one paragraph only.
 """
+    
+    gemini_api_key = gemini_api_keys[randint(0, len(gemini_api_keys)-1)]
+    genai.configure(api_key=gemini_api_key)
+    model = genai.GenerativeModel("gemini-2.0-flash-exp")
+    
     while True:  # Keep retrying until successful
         try:
             response = model.generate_content(query)

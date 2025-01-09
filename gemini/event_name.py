@@ -4,17 +4,11 @@ from google.api_core.exceptions import ResourceExhausted
 import sqlite3
 import json
 import re
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+def get_event_name(event, gemini_api_key):
+    genai.configure(api_key=gemini_api_key)
+    model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-genai.configure(api_key=gemini_api_key)
-model = genai.GenerativeModel("gemini-2.0-flash-exp")
-
-def get_event_name(event):
     article_titles = ""
     for element in event:
         conn = sqlite3.connect('news.db')

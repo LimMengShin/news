@@ -1,18 +1,11 @@
 import google.generativeai as genai
-import os
 import sqlite3
 from sklearn.metrics.pairwise import cosine_similarity
 import networkx as nx
-from dotenv import load_dotenv
-import os
 
-load_dotenv()
+def get_events(gemini_api_key):
+    genai.configure(api_key=gemini_api_key)
 
-gemini_api_key = os.getenv("GEMINI_API_KEY")
-
-genai.configure(api_key=gemini_api_key)
-
-def get_events():
     conn = sqlite3.connect('news.db')
     cursor = conn.cursor()
 
