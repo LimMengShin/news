@@ -1,6 +1,6 @@
 # Unbiased News - A Flask Website with Gemini AI Integration
 
-![demo](image.png)
+![demo](https://cloud-jvsjp5lq4-hack-club-bot.vercel.app/0image.png)
 
 ---
 
