@@ -84,3 +84,9 @@ Check out the live demo: [Unbiased News Demo](https://news.mengshin.me)
 3. **GitHub Copilot**
 
 (Note: Don't worry, I built most of the project myself! These tools helped primarily with generating prompts for Gemini AI and some support in HTML, CSS, and JavaScript as I'm not too well-versed in those technologies.)
+
+---
+
+### Additional Details for Hack Club
+
+I started this project before discovering Hack Club and had written a bunch of code that was not tracked by Hackatime because I had not installed the extension. However, I accidentally shipped it as a new project without realising there was an option to ship it as an update. Please refer to [this thread](https://hackclub.slack.com/archives/C07PZNMBPBN/p1736486246274139) for more details.
