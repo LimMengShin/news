@@ -9,7 +9,7 @@ def call_url_to_text_api(article):
         if text:
             article["content"] = text
         else:
-            raise e
+            raise ValueError("No content found")
     except Exception as e:
         raise e
     return article
