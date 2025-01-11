@@ -4,6 +4,7 @@ on:
     workflows: ["Update server"]
     types:
       - completed
+  workflow_dispatch:
 jobs:
   update-server-2:
     runs-on: ubuntu-latest
