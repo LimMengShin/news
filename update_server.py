@@ -12,6 +12,17 @@ def split_articles(a, n):
     k, m = divmod(len(a), n)
     return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
+conn = sqlite3.connect('news.db')
+cursor = conn.cursor()
+
+delete_query = """
+DELETE FROM news_articles
+WHERE DATE(date) <= DATE('now', '-4 days');
+"""
+
+cursor.execute(delete_query)
+conn.close()
+
 start_date, end_date = get_start_end_date()
 articles_list = call_news_api(start_date=start_date, end_date=end_date)
 random.shuffle(articles_list)
