@@ -6,7 +6,7 @@ from get_date import get_start_end_date
 from newsapi import call_news_api
 from urltotext import call_url_to_text_api
 
-THREADS = 2
+THREADS = 1
 
 def split_articles(a, n):
     k, m = divmod(len(a), n)

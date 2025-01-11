@@ -6,8 +6,10 @@ def call_url_to_text_api(article):
         raise ValueError("Invalid URL")
     try:
         text = newspaper.article(article_url).text
-        article["content"] = text
+        if text:
+            article["content"] = text
+        else:
+            raise e
     except Exception as e:
-        # print(f"Error fetching content for {article_url}: {e}")
         raise e
     return article
