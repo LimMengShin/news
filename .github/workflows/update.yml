@@ -17,6 +17,7 @@ jobs:
           pip install python-dotenv
           pip install newspaper4k
           pip install lxml-html-clean
+          pip install typing-extensions
       - name: Run update_server.py
         env:
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
