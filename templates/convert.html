@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/styles.css">
+    <title>Convert Your Article</title>
+</head>
+
+<body>
+    <header>
+        <a href="/" class="back-btn">Back</a>
+        <h1>Convert Your Article</h1>
+        <div class="toggle-container">
+            <span id="sun2" class="emoji">☀️</span>
+            <label class="switch">
+                <input type="checkbox" id="toggle3" checked>
+                <span class="slider"></span>
+            </label>
+            <span id="moon2" class="emoji">🌙</span>
+        </div>
+    </header>
+    <main>
+        <section class="url-section">
+            <form action="#" id="article-form" method="post">
+                <input name="url" type="text" id="url-input" placeholder="Enter news article URL..." autocomplete="off">
+                <select name="options" id="options">
+                    <option value="bias">Unbiased</option>
+                    <option value="lean">Opposite Lean</option>
+                    <option value="tone">Opposite Tone</option>
+                    <option value="simplify">Simplify</option>
+                </select>
+                <input type="submit" id="submit-button">
+            </form>
+        </section>
+        <!-- Main Article Section -->
+        <section class="main-article">
+            <div class="article-card">
+                <h2>{{article_dict["title"]}}</h2>
+                <img src="{{article_dict['image']}}" alt="{{article_dict['title']}}">
+                <p id="ai-article2"><md>{{article_dict["text"]}}</md></p>
+            </div>
+            <br />
+        </section>
+
+        <!-- Fixed Question Bar -->
+        <div id="question-bar2" class="question-bar">
+            <textarea id="highlighted-text2" readonly placeholder="Highlighted text will appear here..."></textarea>
+            <textarea id="user-question2" placeholder="Type your question here..."></textarea>
+            <button id="ask-question-btn2">Ask Gemini AI</button>
+        </div>
+
+        <!-- AI Answer Display -->
+        <div id="ai-answer2" class="ai-answer hidden">
+            <h3>AI Response</h3>
+            <p id="answer-text2"></p>
+            <button id="close-answer-btn2">Close</button> <!-- Close Button -->
+        </div>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2025 Unbiased News</p>
+    </footer>
+
+    <script>
+        const toggleSwitch = document.getElementById("toggle3");
+        const body = document.body;
+
+        // Check if the user has a stored preference for dark mode
+        if (localStorage.getItem("darkMode") === "enabled") {
+            toggleSwitch.checked = true;
+            body.classList.add("dark-mode");
+        } else if (localStorage.getItem("darkMode") === "disabled") {
+            toggleSwitch.checked = false;
+            body.classList.remove("dark-mode");
+        } else {
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            if (prefersDarkScheme) {
+                toggleSwitch.checked = true;
+                body.classList.add("dark-mode");
+            } else {
+                toggleSwitch.checked = false;
+                body.classList.remove("dark-mode");
+            }
+        }
+
+        toggleSwitch.addEventListener('change', () => {
+            if (toggleSwitch.checked) {
+                body.classList.add("dark-mode");
+                localStorage.setItem("darkMode", "enabled");
+            } else {
+                body.classList.remove("dark-mode");
+                localStorage.setItem("darkMode", "disabled");
+            }
+        });
+        const articleForm = document.getElementById("article-form");
+        var submitButton = document.getElementById("submit-button");
+
+        articleForm.addEventListener("submit", showLoading);
+        function showLoading() {
+            submitButton.disabled = true;
+            submitButton.value = "Loading...";
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const article = document.getElementById('ai-article2');
+            const questionBar = document.getElementById('question-bar2');
+            const highlightedTextArea = document.getElementById('highlighted-text2');
+            const userQuestionInput = document.getElementById('user-question2');
+            const askQuestionBtn = document.getElementById('ask-question-btn2');
+            const aiAnswerSection = document.getElementById('ai-answer2');
+            const answerText = document.getElementById('answer-text2');
+            const closeAnswerBtn = document.getElementById('close-answer-btn2');
+
+            // Adjust the position of the question bar based on keyboard activity
+            const adjustForKeyboard = () => {
+                if (window.visualViewport) {
+                    const viewportHeight = window.visualViewport.height;
+                    const viewportOffset = window.visualViewport.offsetTop;
+
+                    // Set the bottom position based on the visible viewport height
+                    questionBar.style.bottom = `${window.innerHeight - viewportHeight - viewportOffset}px`;
+                }
+            };
+
+            // Listen for viewport changes (triggered when keyboard is shown/hidden)
+            if (window.visualViewport) {
+                window.visualViewport.addEventListener('resize', adjustForKeyboard);
+                window.visualViewport.addEventListener('scroll', adjustForKeyboard);
+            }
+
+            // Reset the position when keyboard is hidden
+            window.addEventListener('resize', () => {
+                questionBar.style.bottom = '0';
+            });
+
+            // Check screen size and toggle the `readonly` attribute
+            const updateTextAreaState = () => {
+                if (window.innerWidth <= 768) { // Mobile condition
+                    highlightedTextArea.removeAttribute('readonly');
+                    highlightedTextArea.placeholder = 'Paste the relevant portion of text you want to ask...';
+                } else { // Desktop condition
+                    highlightedTextArea.setAttribute('readonly', 'true');
+                    highlightedTextArea.placeholder = 'Highlighted text will appear here...';
+                }
+            };
+
+            // Run the function on load
+            updateTextAreaState();
+
+            // Run the function on window resize
+            window.addEventListener('resize', updateTextAreaState);
+
+            let highlightedText = '';
+
+            // Capture highlighted text
+            const handleTextSelection = () => {
+                const selection = window.getSelection();
+                const selectedText = selection.toString().trim();
+                if (selectedText) {
+                    highlightedText = selectedText;
+                    highlightedTextArea.value = highlightedText;
+                }
+            };
+
+            // Add event listeners for both 'mouseup' and 'pageshow'
+            ['mouseup', 'pageshow'].forEach(event => {
+                article.addEventListener(event, handleTextSelection);
+            });
+
+            // Function to send the question to the server
+            const sendQuestion = async () => {
+                const userQuestion = userQuestionInput.value.trim();
+                if (!userQuestion) {
+                    alert('Please enter a question!');
+                    return;
+                }
+
+                // Update button text to "Loading..."
+                askQuestionBtn.textContent = 'Loading...';
+                askQuestionBtn.disabled = true;
+
+                aiAnswerSection.classList.add('hidden');
+
+                try {
+                    // Send data to the server
+                    const response = await fetch('/ask_gemini', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            highlighted_text: highlightedText,
+                            question: userQuestion,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        aiAnswerSection.classList.remove('hidden');
+                        answerText.textContent = data.answer;
+
+                        // Scroll to the answer section for visibility
+                        aiAnswerSection.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        alert('Something went wrong. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                } finally {
+                    // Reset button text and state
+                    askQuestionBtn.textContent = 'Ask Gemini AI';
+                    askQuestionBtn.disabled = false;
+                }
+
+                // Clear question input
+                userQuestionInput.value = '';
+            };
+
+            // Bind Enter key to the sendQuestion function
+            userQuestionInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Prevent the default behavior of Enter key
+                    sendQuestion();
+                }
+            });
+
+            // Bind button click to the sendQuestion function
+            askQuestionBtn.addEventListener('click', sendQuestion);
+
+            // Close AI answer section
+            closeAnswerBtn.addEventListener('click', () => {
+                aiAnswerSection.classList.add('hidden');
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/MarketingPipeline/Markdown-Tag/markdown-tag.js"></script>
+</body>
+
+</html>

@@ -8,8 +8,11 @@
 </head>
 <body>
     <header>
-        <h1>Unbiased News</h1>
-        <input type="text" id="search-input" placeholder="Search news..." autocomplete="off">
+        <nav>
+            <h1><a href="/" id="h1-header">Unbiased News</a></h1>
+            <h3><a href="/" id="home-link">Home</a></h3>
+            <h3><a href="/convert" id="convert-link">Convert Your Article</a></h3>
+        </nav>
         <div class="toggle-container">
             <span id="sun" class="emoji">☀️</span>
             <label class="switch">
@@ -19,20 +22,23 @@
             <span id="moon" class="emoji">🌙</span>
         </div>
     </header>
-    <main id="events-container">
-        <h1>Trending News</h1>
-        <p id="no-results" style="display: none; text-align: center; color: #888;">No events found.</p>
-        {% for event in events %}
-        <div class="event-card" data-title="{{ event['thematic_title']|lower }}">
-            <img src="{{ image_urls[loop.index-1] }}" alt="{{ event['thematic_title'] }}">
-            <div>
-                <h2>{{ event['thematic_title'] }}</h2>
-                <p>{{ event['ai_article'][:200] }}...</p>
-                <a href="/event/{{ event['id'] }}">Read More</a>
+    <div id="search-div">
+        <input type="text" id="search-input" placeholder="Search news..." autocomplete="off">
+        <main id="events-container">
+            <h1>Trending News</h1>
+            <p id="no-results" style="display: none; text-align: center; color: #888;">No events found.</p>
+            {% for event in events %}
+            <div class="event-card" data-title="{{ event['thematic_title']|lower }}">
+                <img src="{{ image_urls[loop.index-1] }}" alt="{{ event['thematic_title'] }}">
+                <div>
+                    <h2>{{ event['thematic_title'] }}</h2>
+                    <p>{{ event['ai_article'][:200] }}...</p>
+                    <a href="/event/{{ event['id'] }}">Read More</a>
+                </div>
             </div>
-        </div>
-        {% endfor %}
-    </main>
+            {% endfor %}
+        </main>
+    </div>
     <footer class="footer">
         <p>&copy; 2025 Unbiased News</p>
     </footer>
