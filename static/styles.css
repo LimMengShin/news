@@ -66,6 +66,11 @@ h1, h2 {
     margin-bottom: 1rem;
 }
 
+#h2-option {
+    text-align: center;
+    margin-bottom: -0.5rem;
+}
+
 /* Header Text */
 header h1 {
     font-size: 1.8rem;

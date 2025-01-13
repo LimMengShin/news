@@ -88,7 +88,8 @@ def search():
 
 article_dict = {"title": "Enter URL above to see your article here!",
                 "image": "https://upload.wikimedia.org/wikipedia/commons/4/48/BLANK_ICON.png",
-                "text": "Nothing here now..."}
+                "text": "Nothing here now...",
+                "option": ""}
 
 @app.route("/convert", methods=["GET", "POST"])
 def convert():
@@ -116,6 +117,7 @@ def convert():
                 else:
                     article_dict["text"] = "Article content not found. Try again perhaps?"
                     error = True
+                article_dict["option"] = {"bias": "Unbiased", "lean": "Opposite Lean", "tone": "Opposite Tone", "simplify": "Simplify"}[option]
             except:
                 error = True
         else:
@@ -175,7 +177,7 @@ Article:
 """ + prompt + """
 
 
-Return only the rewrritten article in markdown format with paragragh breaks with no other text.
+Return only the rewritten article in markdown format with paragragh breaks with no other text.
 """
             gemini_api_key = gemini_api_keys[randint(0, len(gemini_api_keys)-1)]
             genai.configure(api_key=gemini_api_key)
