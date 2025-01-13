@@ -86,13 +86,12 @@ def search():
         return jsonify([{"id": r["id"], "title": r["thematic_title"]} for r in results])
     return jsonify([])
 
-article_dict = {"title": "Enter URL above to see your article here!",
-                "image": "https://upload.wikimedia.org/wikipedia/commons/4/48/BLANK_ICON.png",
-                "text": "Nothing here now...",
-                "option": ""}
-
 @app.route("/convert", methods=["GET", "POST"])
 def convert():
+    article_dict = {"title": "Enter URL above to see your article here!",
+                    "image": "https://upload.wikimedia.org/wikipedia/commons/4/48/BLANK_ICON.png",
+                    "text": "Nothing here now...",
+                    "option": ""}
     if request.method == "POST":
         error = False
         url = request.form.get("url")
@@ -195,7 +194,7 @@ Return only the rewritten article in markdown format with paragragh breaks with 
                 except Exception as e:
                     print(f"Error occurred: {e}")
                     break
-        return redirect("/convert")
+        return render_template("convert.html", article_dict=article_dict)
     return render_template("convert.html", article_dict=article_dict)
 
 @app.route("/ask_gemini", methods=["POST"])
