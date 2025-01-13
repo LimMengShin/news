@@ -186,12 +186,13 @@
 
                 try {
                     // Send data to the server
-                    const response = await fetch('/convert', {
+                    const response = await fetch('/ask_gemini', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
+                            article_text: `{{article_dict["text"]}}`,
                             highlighted_text: highlightedText,
                             question: userQuestion,
                         }),
