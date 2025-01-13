@@ -16,7 +16,7 @@
         } else if (localStorage.getItem("darkMode") === "disabled") {
             body.classList.remove("dark-mode");
         } else {
-            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            let prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
             if (prefersDarkScheme) {
                 body.classList.add("dark-mode");
             } else {
@@ -122,6 +122,7 @@
             toggleSwitch.checked = false;
             body.classList.remove("dark-mode");
         } else {
+            let prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
             if (prefersDarkScheme) {
                 toggleSwitch.checked = true;
                 body.classList.add("dark-mode");
