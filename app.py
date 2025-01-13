@@ -1,4 +1,4 @@
-from flask import Flask, render_template, g, request, jsonify, redirect
+from flask import Flask, render_template, g, request, jsonify, url_for
 import google.generativeai as genai
 from google.api_core.exceptions import ResourceExhausted
 import sqlite3
@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 import os
 from random import randint
 import newspaper
+import requests
 
 app = Flask(__name__)
 
@@ -93,6 +94,19 @@ def convert():
                     "text": "Nothing here now...",
                     "option": ""}
     if request.method == "POST":
+        try:
+            data = request.get_json()
+            print(data.get("highlighted_text"))
+            print(data.get("question"))
+            payload = {
+                "article_text": article_dict["text"],
+                "highlighted_text": data.get("highlighted_text"),
+                "question": data.get("question")
+            }
+            response = requests.post(request.url_root + "ask_gemini", json=payload)
+            return response.json()
+        except:
+            pass
         error = False
         url = request.form.get("url")
         option = request.form.get("options")
@@ -209,7 +223,7 @@ def ask_gemini():
         event = query_db("SELECT ai_article FROM events WHERE id = ?", [event_id], one=True)
         news_article_content = event["ai_article"]
     else:
-        news_article_content = article_dict["text"]
+        news_article_content = data.get("article_text")
     
     highlighted_text = data.get("highlighted_text")
     question = data.get("question")
