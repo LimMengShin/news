@@ -21,6 +21,7 @@ WHERE DATE(date) <= DATE('now', '-4 days');
 """
 
 cursor.execute(delete_query)
+conn.commit()
 conn.close()
 
 start_date, end_date = get_start_end_date()
