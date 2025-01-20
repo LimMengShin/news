@@ -23,6 +23,6 @@ jobs:
             : # Load nix binaries
             export PATH=/home/mengshin/.nix-profile/bin:$PATH
             export PATH=/nix/var/nix/profiles/default/bin:$PATH
-            cd /home/mengshin/pub
+            cd /home/mengshin/pub/news
             git pull
             systemctl --user restart news.service
