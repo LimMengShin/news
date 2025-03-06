@@ -42,7 +42,7 @@ A concise and easy-to-understand summary of the article, ideal for accessibility
 
 ## Demo
 
-Check out the live demo: [Unbiased News Demo](https://news.mengshin.me)
+Check out the live demo: [Unbiased News Demo](https://news.mengshin.dev)
 
 ## Running the Website
 
